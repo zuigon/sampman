@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# `control`
+# ! Mora biti u folderu servera, zajedno sa vars.txt i 
+
+if [[ -e $1/.sampserver ]]; then
+	SRV_AUTHED=1
+	cd $1
+else
+	if [[ $1 != "all" ]]; then
+		echo "pwd nije samp server !"
+		exit 1
+	fi
+fi
+
+# . vars.txt 2>&1 > /dev/null || exit 1
+# sve varijable
+
+# SCREEN_NAME="samphosting-`pwd | sed 's/^.*\///g'`"
+SCREEN_NAME="samphosting-$1"
+
+samppid() {
+	screen -wipe > /dev/null
+	SAMP=`screen -list | grep $SCREEN_NAME | cut -d"." -f 1`
+}
+
+start() {
+	if [ $SAMP ]; then
+		echo "SAMP server is already running with PID ${SAMP}"
+		exit 1
+	else
+		echo "Starting SAMP server."
+		# ~/samp/start
+		if [[ -e ../.screenrc ]]; then
+			screen -A -m -d -c ../.screenrc -S $SCREEN_NAME -t samphosting ./start
+		else
+			screen -A -m -d -S $SCREEN_NAME -t samphosting ./start
+		fi
+		sleep 2
+		samppid
+		echo "SAMP has started with PID of ${SAMP}"
+	fi
+}
+
+stop() {
+	if [ $SAMP ]; then
+		echo "Stop SAMP server with PID ${SAMP}"
+		kill -9 $SAMP
+	else
+		echo "SAMP Server is not running!!"
+	fi
+}
+
+status() {
+	if [ $SAMP ]; then
+		echo "SAMP server is running with PID of ${SAMP}"
+	else
+		echo "SAMP Server is not running!!"
+	fi
+}
+
+if [[ $1 == "all" ]]; then
+	if [[ $2 == "status" ]]; then
+		for srv in *; do
+			if [[ $srv1 != "template" ]]; then
+				if [[ -e $srv/.sampserver ]]; then
+					SCREEN_NAME=samphosting-$srv
+					echo $srv
+					samppid
+					status
+				fi
+			fi
+		done
+	else
+		echo "Error"
+		echo "Za 'all' moze samo 'status'"
+		exit 1
+	fi
+	exit
+fi
+
+case "$2" in
+	start)
+	samppid
+	start
+;;
+	stop)
+	samppid
+	stop
+;;
+	restart)
+	samppid
+	stop
+	SAMP=""
+	start
+;;
+	status)
+	samppid
+	status
+	RETVAL=$?
+;;
+	*)
+	echo $"Usage: $0 {start|stop|restart|status}"
+	exit 1
+esac
+
+cd - 2>&1 > /dev/null
+
+exit

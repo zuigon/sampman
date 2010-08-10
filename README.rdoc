@@ -1,0 +1,10 @@
+= sampman
+
+Copyright:: (c) 2010 BKrsta
+License::   MIT License
+
+* sampman - Tools for creating and controling SAMP server from CLI/remotely (via Web GUI, Telnet)
+
+= TODO
+
+* vidi: create.rb, telnetsrv.rb

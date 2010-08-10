@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "ovo je virtualni samp srv"
+echo "..."
+sleep 100000
