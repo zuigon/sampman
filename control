@@ -45,7 +45,19 @@ start() {
 stop() {
 	if [ $SAMP ]; then
 		echo "Stop SAMP server with PID ${SAMP}"
-		kill -9 $SAMP
+		#kill -9 $SAMP
+		for child in $(ps -o pid,ppid ax | \
+		  awk "{ if ( \$2 == $SAMP ) { print \$1 }}")
+		do
+		  #echo "Echo child process $child because ppid = $pid"
+		  for child2 in $(ps -o pid,ppid ax | \
+		   awk "{ if ( \$2 == $child ) { print \$1 }}")
+		  do
+		    #echo "Echo child process $child2 because ppid = $child"
+		    #echo $child2
+		    kill -SIGINT $child2
+		  done
+		done
 	else
 		echo "SAMP Server is not running!!"
 	fi
