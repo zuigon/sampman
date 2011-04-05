@@ -84,7 +84,7 @@ else
   info "moving extracted server to template/"
   `mv samp03 template`
   info "generating server startup script"
-  File.open("template/start", 'w+') do |f| f.puts('./samp03svr | tee -a logs/log__`date +"%Y_%m_%d-%H_%M_%S" | xargs echo`.txt') end
+  File.open("template/start", 'w+') do |f| f.puts('mkdir -p logs; ./samp03svr | tee -a logs/log__`date +"%Y_%m_%d-%H_%M_%S" | xargs echo`.txt') end
   info "mkdir logs for server"
   `mkdir -p template/logs`
   info "making startup script executable"
