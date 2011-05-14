@@ -38,7 +38,7 @@ rcon_password <%= server_rcon %>
 maxplayers <%= server_maxpl %>
 port <%= server_port %>
 hostname <%= server_hostname %>
-gamemode0 grandlarc 1
+gamemode0 gm
 filterscripts base gl_actions gl_property gl_realtime
 announce 0
 query 1
@@ -147,6 +147,7 @@ template = ERB.new cfg_template
 cfg = template.result(
   lambda do
     server_rcon  = getvar("server_rcon")
+    server_rcon  = server_rcon[/-e (.+)/,1] if server_rcon.start_with? "-e "
     server_maxpl = getvar("server_maxpl")
     server_port  = getvar("server_port")
     server_hostname = getvar("server_hostname")
